@@ -1,7 +1,7 @@
 (function(win, doc, $) {
   var chatModule = (function() {
-    var _leadself = "Me: ",
-      _leadcomputer = "PC: ",
+    var _leadself = "Romantic: ",
+      _leadcomputer = "MB-Pro: ",
       _aSaid = ["This is a Cyber Chat"],
       _msgYes = "Yes, that's a great idea.",
       _msgNo = "No, that must be a mistake.",
