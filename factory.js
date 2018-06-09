@@ -73,6 +73,9 @@
       var cg = CircleGeneratorSingleton.getInstance();
       var circle = cg.create(e.pageX - 25, e.pageY - 25, "red"); // <-----
 
+      console.log("cg: ", cg);
+      console.log("circle: ", circle);
+
       cg.add(circle);
     });
 
