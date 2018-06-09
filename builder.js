@@ -19,6 +19,7 @@
   /** Build red circle */
   function RedCircleBuilder() {
     this.item = new Circle();
+    console.log("RedCircleBuilder this.item = new Circle(): ", this.item);
     this.init();
   }
   RedCircleBuilder.prototype.init = function() {
