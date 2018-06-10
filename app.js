@@ -25,6 +25,23 @@
   Circle.prototype.get = function() {
     return this.item;
   };
+  /** Chain of resposibility  */
+  Circle.prototype.next = function(shp) {
+    if (shp) this.nexShape = shp;
+    return this.nexShape;
+  };
+  Circle.prototype.chainDo = function(action, args, count) {
+    this[action].apply(this, args);
+    if (count && this.nexShape) {
+      setTimeout(
+        binder(this, function() {
+          this.nexShape.chainDo(action, args, --count);
+        }),
+        20
+      );
+    }
+  };
+  /** ------------------------ */
   Circle.prototype.getID = function() {
     return this.id;
   };
@@ -181,11 +198,32 @@
 
       // 4.1
       function create(left, top, type) {
-        var circle = _cf.create(type);
+        var circle = _cf.create(type),
+          index = _aCircle.length - 1;
+
         circle.move(left, top);
         circle.setID(_aCircle.length);
         _aCircle.push(circle);
+
+        console.log(_aCircle);
+
+        // chain responsibility
+        if (index != -1) {
+          _aCircle[index].next(circle);
+        }
+
         return shapeFacade(circle);
+      }
+
+      // chain
+      function chainTint(count) {
+        var index = Math.max(0, _aCircle.length - count),
+          clr =
+            "#" +
+            Math.floor(Math.random() * 255).toString(16) +
+            Math.floor(Math.random() * 255).toString(16) +
+            Math.floor(Math.random() * 255).toString(16);
+        _aCircle[index].chainDo("color", [clr], count);
       }
 
       function tint(clr) {
@@ -212,6 +250,7 @@
         register: registerShape,
         setStage: setStage,
         tint: tint,
+        chainTint: chainTint,
         move: move
       };
     }
@@ -249,6 +288,9 @@
 
       // 5.
       cg.add(circle);
+
+      // chain
+      cg.chainTint(5);
 
       // layer and opacity
       flyWeightFader($(e.target));
