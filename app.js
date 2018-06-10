@@ -25,6 +25,12 @@
   Circle.prototype.get = function() {
     return this.item;
   };
+  Circle.prototype.getID = function() {
+    return this.id;
+  };
+  Circle.prototype.setID = function(id) {
+    this.id = id;
+  };
 
   /**
    * Rect()
@@ -35,6 +41,21 @@
   }
 
   clone(Circle, Rect);
+
+  /** Facade design pattern */
+  function shapeFacade(shp) {
+    return {
+      color: function(clr) {
+        shp.color(clr);
+      },
+      move: function(x, y) {
+        shp.move(x, y);
+      },
+      getID: function() {
+        return shp.getID();
+      }
+    };
+  }
 
   /** Decorator design pattern */
   function selfDestructDecorator(obj) {
@@ -161,8 +182,9 @@
       function create(left, top, type) {
         var circle = _cf.create(type);
         circle.move(left, top);
-        // _position(circle, left, top);
-        return circle;
+        circle.setID(_aCircle.length);
+        _aCircle.push(circle);
+        return shapeFacade(circle);
       }
 
       function tint(clr) {
@@ -174,9 +196,7 @@
       }
 
       function add(circle) {
-        _stage.add(circle.get());
-        _aCircle.push(circle);
-        console.log("Abstracting Sigleton method add _aCircle: ", _aCircle);
+        _stage.add(_aCircle[circle.getID()].get());
       }
 
       function index() {
