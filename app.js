@@ -98,6 +98,20 @@
     this.context.remove("." + this.SIG + index);
   };
 
+  /**
+   * Composite design pattern
+   */
+  function CompositeController(a) {
+    this.a = a;
+  }
+  CompositeController.prototype.action = function(act) {
+    var args = Array.prototype.slice.call(arguments);
+    args.shift();
+    for (var item in this.a) {
+      this.a[item][act].apply(this.a[item], args);
+    }
+  };
+
   /** Abstracting Singleton design pattern */
   var CircleGeneratorSingleton = (function() {
     var instance;
@@ -105,7 +119,8 @@
     function init() {
       var _aCircle = [],
         _stage,
-        _cf = new ShapeFactory();
+        _cf = new ShapeFactory(),
+        _cc = new CompositeController(_aCircle);
 
       // function _position(circle, left, top) {
       //   circle.move(left, top);
@@ -129,6 +144,14 @@
         return circle;
       }
 
+      function tint(clr) {
+        _cc.action("color", clr);
+      }
+
+      function move(left, top) {
+        _cc.action("move", left, top);
+      }
+
       function add(circle) {
         _stage.add(circle.get());
         _aCircle.push(circle);
@@ -145,7 +168,9 @@
         create: create,
         add: add,
         register: registerShape,
-        setStage: setStage
+        setStage: setStage,
+        tint: tint,
+        move: move
       };
     }
 
@@ -194,6 +219,12 @@
         );
 
         cg.add(circle);
+      } else if (e.key === "t") {
+        cg.tint("black");
+      } else if (e.key === "r") {
+        cg.move("+=5px", "+=0px");
+      } else if (e.key === "l") {
+        cg.move("-=5px", "+=0px");
       }
     });
   });
