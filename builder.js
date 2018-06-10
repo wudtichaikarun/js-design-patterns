@@ -1,15 +1,22 @@
 (function(win, $) {
+  /** Prototype desing pattern
+   * clone properties and method
+   */
+  function clone(src, out) {
+    for (var attr in src.prototype) {
+      out.prototype[attr] = src.prototype[attr];
+    }
+  }
+
   /** Builder desing pattern
    * Circle constructor
    * */
   function Circle() {
     this.item = $('<div class="circle"></div>');
   }
-
   Circle.prototype.color = function(clr) {
     this.item.css("background", clr);
   };
-
   Circle.prototype.move = function(left, top) {
     this.item.css("left", left);
     this.item.css("top", top);
@@ -17,6 +24,16 @@
   Circle.prototype.get = function() {
     return this.item;
   };
+
+  function Rect() {
+    this.item = $('<div class="rect"></div>');
+  }
+
+  /**
+   * Rect()
+   * clone every prototype method from Circle constructor
+   */
+  clone(Circle, Rect);
 
   /** Build red circle */
   function RedCircleBuilder() {
@@ -38,6 +55,12 @@
   }
   BlueCircleBuilder.prototype.init = function() {
     this.item.color("blue");
+
+    var rect = new Rect();
+    rect.color("yellow");
+    rect.move(40, 40);
+
+    this.item.get().append(rect.get());
   };
   BlueCircleBuilder.prototype.get = function() {
     return this.item;
