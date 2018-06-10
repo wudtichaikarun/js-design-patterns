@@ -85,6 +85,68 @@
     };
   }
 
+  /** Observer design pattern */
+  function eventDispatcherDecorator(o) {
+    var list = {};
+    o.addEvent = function(type, listener) {
+      if (!list[type]) {
+        list[type] = [];
+      }
+
+      if (list[type].indexOf(listener) === -1) {
+        list[type].push(listener);
+        //console.log(list[type]);
+      }
+    };
+
+    o.removeEvent = function(type, listener) {
+      var a = list[type];
+      if (a) {
+        var index = a.indexOf(listener);
+        if (index > -1) {
+          a.splice(index, 1);
+        }
+      }
+    };
+
+    o.dispatchEvent = function(e) {
+      // console.log(e.type);
+      // console.log(list["over"][0]);
+      var aList = list[e.type];
+      if (aList) {
+        if (!e.target) {
+          e.target = this;
+        }
+
+        for (var index in aList) {
+          aList[index](e);
+        }
+      }
+    };
+  }
+
+  // observer
+  var o = {};
+  var fun = function() {
+    console.log("it's over 2");
+  };
+  eventDispatcherDecorator(o);
+  o.addEvent("over", function() {
+    console.log("it's over");
+  });
+  /** note: fun invoked 2 time
+   * but process are same
+   * function will called just 1 time
+   */
+  o.addEvent("over", fun);
+  o.addEvent("over", fun);
+  o.addEvent("over", function() {
+    console.log("it's over 3");
+  });
+  // remove evert over , fun
+  o.removeEvent("over", fun);
+  o.dispatchEvent({ type: "over" });
+
   /** Build red circle */
   function RedCircleBuilder() {
     this.item = new Circle();
