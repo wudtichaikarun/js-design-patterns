@@ -17,6 +17,7 @@
   Circle.prototype.color = function(clr) {
     this.item.css("background", clr);
   };
+  // 4.1.2
   Circle.prototype.move = function(left, top) {
     this.item.css("left", left);
     this.item.css("top", top);
@@ -70,6 +71,7 @@
   var ShapeFactory = function() {
     this.type = {}; // 'red' or 'blue'
 
+    // 4.1.1
     this.create = function(type) {
       return new this.type[type]().get();
     };
@@ -109,14 +111,17 @@
       //   circle.move(left, top);
       // }
 
+      // 2.1 create object from ShapeFactory constructor
       function registerShape(name, cls) {
         _cf.register(name, cls);
       }
 
+      // 3.1 set value to _stage
       function setStage(stg) {
         _stage = stg;
       }
 
+      // 4.1
       function create(left, top, type) {
         var circle = _cf.create(type);
         circle.move(left, top);
@@ -127,6 +132,7 @@
       function add(circle) {
         _stage.add(circle.get());
         _aCircle.push(circle);
+        console.log("Abstracting Sigleton method add _aCircle: ", _aCircle);
       }
 
       function index() {
@@ -134,6 +140,7 @@
       }
 
       return {
+        // 1.1 return method to public
         index: index,
         create: create,
         add: add,
@@ -154,21 +161,26 @@
   })();
 
   $(win.document).ready(function() {
+    // 1. get method form CircleGeneratorSingleton
     var cg = CircleGeneratorSingleton.getInstance();
 
-    console.log("cg: ", cg);
+    console.log("document ready cg: ", cg);
 
+    // 2. register compoent
     cg.register("red", RedCircleBuilder);
     cg.register("blue", BlueCircleBuilder);
 
+    // 3. setStage arg come from StageAdater constructor
     cg.setStage(new StageAdapter(".advert"));
 
     // Event from mouse
     $(".advert").click(function(e) {
+      // 4.
       var circle = cg.create(e.pageX - 25, e.pageY - 25, "red");
 
-      console.log("circle: ", circle);
+      console.log("$(.advert).click() circle: ", circle);
 
+      // 5.
       cg.add(circle);
     });
 
