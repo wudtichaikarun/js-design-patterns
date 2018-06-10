@@ -81,7 +81,22 @@
     };
   };
 
-  /** Singleton design pattern */
+  /** Adapter design pattern */
+  function StageAdapter(id) {
+    this.index = 0;
+    this.context = $(id);
+  }
+  StageAdapter.prototype.SIG = "stageItem_";
+  StageAdapter.prototype.add = function(item) {
+    ++this.index;
+    item.addClass(this.SIG + this.index);
+    this.context.append(item);
+  };
+  StageAdapter.prototype.remove = function(index) {
+    this.context.remove("." + this.SIG + index);
+  };
+
+  /** Abstracting Singleton design pattern */
   var CircleGeneratorSingleton = (function() {
     var instance;
 
@@ -110,7 +125,7 @@
       }
 
       function add(circle) {
-        _stage.append(circle.get());
+        _stage.add(circle.get());
         _aCircle.push(circle);
       }
 
@@ -146,7 +161,7 @@
     cg.register("red", RedCircleBuilder);
     cg.register("blue", BlueCircleBuilder);
 
-    cg.setStage($(".advert"));
+    cg.setStage(new StageAdapter(".advert"));
 
     // Event from mouse
     $(".advert").click(function(e) {
