@@ -26,15 +26,25 @@
     return this.item;
   };
 
-  function Rect() {
-    this.item = $('<div class="rect"></div>');
-  }
-
   /**
    * Rect()
    * clone every prototype method from Circle constructor
    */
+  function Rect() {
+    this.item = $('<div class="rect"></div>');
+  }
+
   clone(Circle, Rect);
+
+  /** Decorator design pattern */
+  function selfDestructDecorator(obj) {
+    obj.item.click(function() {
+      obj.kill();
+    });
+    obj.kill = function() {
+      obj.item.remove();
+    };
+  }
 
   /** Build red circle */
   function RedCircleBuilder() {
@@ -60,6 +70,8 @@
     var rect = new Rect();
     rect.color("yellow");
     rect.move(40, 40);
+
+    selfDestructDecorator(rect);
 
     this.item.get().append(rect.get());
   };
