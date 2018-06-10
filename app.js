@@ -67,7 +67,7 @@
   };
 
   /** Factory design pattern */
-  var CircleFactory = function() {
+  var ShapeFactory = function() {
     this.type = {}; // 'red' or 'blue'
 
     this.create = function(type) {
@@ -87,15 +87,20 @@
 
     function init() {
       var _aCircle = [],
-        _stage = $(".advert"),
-        _cf = new CircleFactory();
-
-      _cf.register("red", RedCircleBuilder);
-      _cf.register("blue", BlueCircleBuilder);
+        _stage,
+        _cf = new ShapeFactory();
 
       // function _position(circle, left, top) {
       //   circle.move(left, top);
       // }
+
+      function registerShape(name, cls) {
+        _cf.register(name, cls);
+      }
+
+      function setStage(stg) {
+        _stage = stg;
+      }
 
       function create(left, top, type) {
         var circle = _cf.create(type);
@@ -116,7 +121,9 @@
       return {
         index: index,
         create: create,
-        add: add
+        add: add,
+        register: registerShape,
+        setStage: setStage
       };
     }
 
@@ -132,12 +139,19 @@
   })();
 
   $(win.document).ready(function() {
+    var cg = CircleGeneratorSingleton.getInstance();
+
+    console.log("cg: ", cg);
+
+    cg.register("red", RedCircleBuilder);
+    cg.register("blue", BlueCircleBuilder);
+
+    cg.setStage($(".advert"));
+
     // Event from mouse
     $(".advert").click(function(e) {
-      var cg = CircleGeneratorSingleton.getInstance();
       var circle = cg.create(e.pageX - 25, e.pageY - 25, "red");
 
-      console.log("cg: ", cg);
       console.log("circle: ", circle);
 
       cg.add(circle);
@@ -146,7 +160,6 @@
     // Event from keyboard
     $(document).keypress(function(e) {
       if (e.key == "a") {
-        var cg = CircleGeneratorSingleton.getInstance();
         var circle = cg.create(
           Math.floor(Math.random() * 600),
           Math.floor(Math.random() * 600),
