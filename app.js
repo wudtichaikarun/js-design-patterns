@@ -67,10 +67,12 @@
   BlueCircleBuilder.prototype.init = function() {
     this.item.color("blue");
 
+    // create rectagle shape
     var rect = new Rect();
     rect.color("yellow");
     rect.move(40, 40);
 
+    // click for delete rectangle shape
     selfDestructDecorator(rect);
 
     this.item.get().append(rect.get());
@@ -123,6 +125,13 @@
       this.a[item][act].apply(this.a[item], args);
     }
   };
+
+  /** Fly Weight design pattern */
+  function flyWeightFader(item) {
+    if (item.hasClass("circle")) {
+      item.fadeTo(0.5, item.css("opacity") * 0.5);
+    }
+  }
 
   /** Abstracting Singleton design pattern */
   var CircleGeneratorSingleton = (function() {
@@ -219,6 +228,9 @@
 
       // 5.
       cg.add(circle);
+
+      // layer and opacity
+      flyWeightFader($(e.target));
     });
 
     // Event from keyboard
