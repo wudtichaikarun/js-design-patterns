@@ -42,18 +42,19 @@
 
   clone(Circle, Rect);
 
+  /** Proxy design pattern */
+  function binder(scope, fun) {
+    return function() {
+      return fun.apply(scope, arguments);
+    };
+  }
+
   /** Facade design pattern */
   function shapeFacade(shp) {
     return {
-      color: function(clr) {
-        shp.color(clr);
-      },
-      move: function(x, y) {
-        shp.move(x, y);
-      },
-      getID: function() {
-        return shp.getID();
-      }
+      color: binder(shp, shp.color),
+      move: binder(shp, shp.move),
+      getID: binder(shp, shp.getID)
     };
   }
 
